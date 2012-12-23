@@ -8,12 +8,12 @@
  * @version $Id$ 
  */
 class OOApp extends OOCore {
-    private $_conf;
-    private $_request;
+    public $config;
+    public $params;
+    public $queue_type;
     public  $db;
-    
     public function __construct($conf){
-        $this->_conf = $conf;
+        $this->config = $conf;
     }
     
     public function go(){
@@ -28,7 +28,7 @@ class OOApp extends OOCore {
     }
 
     private function prepareRequest(){
-        $this->_request = $_REQUEST;
+        $this->params = $_REQUEST;
     }
 
     private function init(){
@@ -38,19 +38,22 @@ class OOApp extends OOCore {
     }
     private function initDB(){
         //TODO  ... getConf()
-        if(!isset($this->_conf['apps'][strtolower(OO::$__appName)]['database']))
+        if(!isset($this->config['apps'][strtolower(OO::$__appName)]['database']))
             return ;
-        $dtype = $this->_conf['apps'][strtolower(OO::$__appName)]['database']['type'];
-        $dconf = $this->_conf['apps'][strtolower(OO::$__appName)]['database']['conf'];
+        $dtype = $this->config['apps'][strtolower(OO::$__appName)]['database']['type'];
+        $dconf = $this->config['apps'][strtolower(OO::$__appName)]['database']['conf'];
 
-        if(!isset($this->_conf['database'][$dconf])){
+        if(!isset($this->config['database'][$dconf])){
             //TODO_LOG database conf error
             echo ' get database conf error';
             exit(0);
         }
 
-        $db_conf = $this->_conf['database'][$dconf];
-        $this->db = DB::getDB($db_conf);
+        $dbconfig = $this->config['database'][$dconf];
+        $this->db = DB::getDB($dbconfig);
+		
+		$this->queue_type = isset($this->config['apps'][strtolower(OO::$__appName)]['queue_type']) ?
+			$this->config['apps'][strtolower(OO::$__appName)]['queue_type'] : 0 ;
     }
 
 }

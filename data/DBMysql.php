@@ -47,12 +47,11 @@ class DBMysql {
             //TOTO_LOG execute sql error
             return false;
         } else {
-            $this->_affectedRows = mysql_affected_rows($this->_linkID);
-            $this->_lastInsID = mysql_insert_id($this->_linkID);
+            $this->_affectedRows = mysql_affected_rows($this->_resource);
+            $this->_lastInsID = mysql_insert_id($this->_resource);
             return $this->_affectedRows;
         }
     }
-
 
     public function fetchAll($sql) {
         $result = array();
@@ -69,14 +68,14 @@ class DBMysql {
     }
 
     public function close() {
-        if ($this->_linkID){
-            mysql_close($this->_linkID);
+        if ($this->_resource){
+            mysql_close($this->_resource);
         }
-        $this->_linkID = null;
+        $this->_resource = null;
     }
 
     public function error() {
-        $this->error = mysql_error($this->_linkID);
+        $this->error = mysql_error($this->_resource);
         if('' != $this->queryStr){
             $this->error .= "\n [ SQL语句 ] : ".$this->queryStr;
         }
@@ -89,8 +88,8 @@ class DBMysql {
     }
 
     public function getSafeString($str) {
-        if($this->_linkID) {
-            return mysql_real_escape_string($str,$this->_linkID);
+        if($this->_resource) {
+            return mysql_real_escape_string($str,$this->_resource);
         }else{
             return mysql_escape_string($str);
         }
