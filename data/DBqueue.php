@@ -7,14 +7,11 @@
  * @date 2012-12-23 14:46:05
  * @version $Id$ 
  */
-
 class DBqueue {
-
     public  $db;
     public  $unique;
     private $_type;
     private $_table;
-
 
     public function __construct($db, $type, $unique = true, $table_pre = ''){
         if(!$db) {
@@ -32,7 +29,6 @@ class DBqueue {
             $this->createTable($unique);
         }
     }
-
 
     public function add($value, $times = 1){
         $sql = sprintf($this->_sql_insert, 
@@ -62,7 +58,6 @@ class DBqueue {
                 )
             );
         }
-
         return $return;
     }
 
@@ -72,19 +67,13 @@ class DBqueue {
         $this->db->execute($sql);
     }
 
-    private $_sql_update_times = <<<SQL
-update %s set times=%d where id=%d
-SQL;
+    private $_sql_update_times = "update %s set times=%d where id=%d";
 
-    private $_sql_get_top = <<<SQL
-select * from  %s where `type`=%d and times>0 limit %d
-SQL;
+    private $_sql_get_top = "select * from  %s where `type`=%d and times>0 limit %d";
 
-    private $_sql_insert = <<<SQL
-insert into %s (`type`, value, times) values(%d, "%s" , %d)
-SQL;
+    private $_sql_insert  = "insert into %s (`type`, value, times) values(%d, '%s' , %d)";
 
-    private $_sql_create_table = <<<SQL
+    private $_sql_create_table = "
 CREATE  TABLE `%s` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `type` TINYINT NOT NULL DEFAULT 0 ,
@@ -92,9 +81,9 @@ CREATE  TABLE `%s` (
   `times` VARCHAR(45) NOT NULL DEFAULT 0 ,
   `createat` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
-SQL;
-    private $_sql_create_table_unique = <<<SQL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+    private $_sql_create_table_unique = "
 CREATE TABLE `%s` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `type` tinyint(4) NOT NULL DEFAULT '0',
@@ -103,7 +92,6 @@ CREATE TABLE `%s` (
     `createat` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     UNIQUE KEY `value_UNIQUE` (`value`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
-SQL;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
 }

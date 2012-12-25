@@ -13,19 +13,25 @@ defined('FRAMEWORK_PATH') or define('FRAMEWORK_PATH', dirname(__FILE__) . DIRECT
 defined('OO_DEBUG') or define('OO_DEBUG',false);
 class OO {
     public static $__appName;
-    public static $__request;
     public static $__basePath;
     public static $__appHandler;
     public static $__appBasePath;
     public static $__includePaths;
 
+	public static $db;
+	public static $app;
+	public static $queue;
+	public static $config;
+	public static $db_server;
+	public static $queue_type;
+
     public static function createApp($conf){
-
-        self::init($conf);
-
+		self::$config = $conf;
+        self::init();
+        self::initDBConfig();
         Autoloader::Register();
-        $app = new self::$__appName($conf);
-        return $app;
+		self::$app	 = new self::$__appName($conf);
+        return self::$app;
     }
 
     private static function setIncludePaths(){
@@ -35,14 +41,19 @@ class OO {
         self::$__includePaths[] = dirname(__FILE__) . '/lib';
 
         self::$__appBasePath = self::$__basePath . DIRECTORY_SEPARATOR . strtolower(self::$__appName);
-        if(is_dir(self::$__appBasePath))
+        if(is_dir(self::$__appBasePath)){
             self::$__includePaths[] = self::$__appBasePath;
+			if(is_dir(self::$__appBasePath . '/models'))
+				self::$__includePaths[] = self::$__appBasePath . '/models';
+		}
     }
 
-    private static function init($conf){
+    private static function init(){
+		$conf = self::$config ;
         $apps = array_keys($conf['apps']);
-        self::$__request    = $_REQUEST;
-        self::$__appName    = isset($_REQUEST['app']) ? ucwords($_REQUEST['app']) : '_appdonothave';
+        self::$__appName  = isset($_REQUEST['app']) ? ucwords($_REQUEST['app']) : '_appdonothave';
+		self::$queue_type = isset($conf['apps'][strtolower(OO::$__appName)]['queue_type']) ?
+			$conf['apps'][strtolower(OO::$__appName)]['queue_type'] : 0 ;
         if(!isset($conf['basePath']) || 
             0 == strlen($conf['basePath']) ||
             !is_dir($conf['basePath'])
@@ -60,6 +71,21 @@ class OO {
         }
         self::setIncludePaths();
     }
+
+	private static function initDBConfig(){
+		$conf = self::$config;
+        if(!isset($conf['apps'][strtolower(OO::$__appName)]['database']))
+            return ;
+        $dtype = $conf['apps'][strtolower(OO::$__appName)]['database']['type'];
+        $dconf = $conf['apps'][strtolower(OO::$__appName)]['database']['conf'];
+
+        if(!isset($conf['database'][$dconf])){
+            //TODO_LOG database conf error
+            echo ' get database conf error';
+            exit(0);
+        }
+		OO::$db_server = $conf['database'][$dconf];
+	}
 }
 
 /**
@@ -92,7 +118,6 @@ class Autoloader
         }
     }
 }
-
 
 
 /* vim: set ts=4 sw=4 sts=4 tw=100 noet: */

@@ -8,17 +8,13 @@
  * @version $Id$ 
  */
 class OOApp extends OOCore {
-    public $config;
-    public $params;
-    public $queue_type;
-    public  $db;
-    public function __construct($conf){
-        $this->config = $conf;
+    public function __construct(){
+        $this->config = OO::$config;
     }
     
     public function go(){
         $this->prepareRequest();
-        $this->init();
+        //$this->init();
         $handler = ucwords(OO::$__appHandler) ."Handler";
         $this->$handler();
     }
@@ -30,32 +26,6 @@ class OOApp extends OOCore {
     private function prepareRequest(){
         $this->params = $_REQUEST;
     }
-
-    private function init(){
-        
-        $this->initDB();
-    
-    }
-    private function initDB(){
-        //TODO  ... getConf()
-        if(!isset($this->config['apps'][strtolower(OO::$__appName)]['database']))
-            return ;
-        $dtype = $this->config['apps'][strtolower(OO::$__appName)]['database']['type'];
-        $dconf = $this->config['apps'][strtolower(OO::$__appName)]['database']['conf'];
-
-        if(!isset($this->config['database'][$dconf])){
-            //TODO_LOG database conf error
-            echo ' get database conf error';
-            exit(0);
-        }
-
-        $dbconfig = $this->config['database'][$dconf];
-        $this->db = DB::getDB($dbconfig);
-		
-		$this->queue_type = isset($this->config['apps'][strtolower(OO::$__appName)]['queue_type']) ?
-			$this->config['apps'][strtolower(OO::$__appName)]['queue_type'] : 0 ;
-    }
-
 }
 
 /* vim: set ts=4 sw=4 sts=4 tw=100 noet: */

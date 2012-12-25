@@ -8,15 +8,15 @@
  * @version $Id$ 
  */
 class OOCore {
-    private $_attributes;
+    public $_attributes;
 
     public function __set($name , $value){ 
-        $_attributes[$name] = $value;
+        $this->_attributes[$name] = $value;
     }
 
     public function __get($name){
-        if(isset($_attributes[$name]))
-            return $_attributes[$name];
+        if(isset($this->_attributes[$name]))
+            return $this->_attributes[$name];
         else
             return '';
     }
