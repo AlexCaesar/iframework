@@ -20,6 +20,7 @@ class OO {
 
 	public static $db;
 	public static $app;
+	public static $log;
 	public static $queue;
 	public static $config;
 	public static $db_server;
@@ -27,12 +28,32 @@ class OO {
 
     public static function createApp($conf){
 		self::$config = $conf;
+		if(isset($conf['zip'])){
+			self::preInitOutputBuffer($conf['zip']);
+		}
         self::init();
         self::initDBConfig();
         Autoloader::Register();
 		self::$app	 = new self::$__appName($conf);
+		if(isset($conf['log'])){
+			self::preInitLog($conf['log']);
+		}
         return self::$app;
     }
+
+	private static function preInitLog($level){
+		$level = (empty($level) || intval($level) != $level) ? 0 : intval($level);
+		self::$log = new OOLog($level);
+	}
+	private static function preInitOutputBuffer($type){
+		if(strlen($type) < 1 ) return;
+		if($type == 'gzip'){
+			@ob_start ('ob_gzhandler');                                         
+			header('Content-type: text/html; charset: UTF-8');                  
+			header('Cache-Control: must-revalidate');                           
+			header("Expires: " . gmdate('D, d M Y H:i:s', time() - 1) . ' GMT');
+		}
+	}
 
     private static function setIncludePaths(){
         self::$__includePaths = array_unique(explode(PATH_SEPARATOR , get_include_path()));
@@ -71,6 +92,7 @@ class OO {
         }
         self::setIncludePaths();
     }
+
 
 	private static function initDBConfig(){
 		$conf = self::$config;

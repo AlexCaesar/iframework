@@ -2,6 +2,7 @@
 /**
  * @filename curl.php
  * @author T0ny<er@zhangabc.com>
+ * @link https://github.com/zhanger/iframework 
  * @license http://www.zend.com/license/3_0.txt   PHP License 3.0
  * @date 2012-12-25 04:23:48
  * @version $Id$ 
@@ -25,3 +26,5 @@ class Curl {
         return $r;  
     }  
 }
+
+/* vim: set ts=4 sw=4 sts=4 tw=100 noet: */

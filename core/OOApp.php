@@ -17,6 +17,7 @@ class OOApp extends OOCore {
         //$this->init();
         $handler = ucwords(OO::$__appHandler) ."Handler";
         $this->$handler();
+        $this->happyEnding();
     }
 
     private function getApp(){
@@ -26,6 +27,10 @@ class OOApp extends OOCore {
     private function prepareRequest(){
         $this->params = $_REQUEST;
     }
+
+	protected function happyEnding(){
+		OO::$log->handle();
+	}
 }
 
 /* vim: set ts=4 sw=4 sts=4 tw=100 noet: */

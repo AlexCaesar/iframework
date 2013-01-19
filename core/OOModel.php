@@ -9,6 +9,7 @@
  */
 class OOModel extends OOCore {
     public function __construct(){
+        $this->log			= OO::$log;
         $this->config		= OO::$config;
         $this->db_config	= OO::$db_server;
         $this->queue_type	= OO::$queue_type;

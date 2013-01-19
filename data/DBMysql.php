@@ -45,7 +45,7 @@ class DBMysql {
         $result = mysql_query($sql, $this->_resource) ;
         if ( false === $result) {
             //TOTO_LOG execute sql error
-            return false;
+            return mysql_error();
         } else {
             $this->_affectedRows = mysql_affected_rows($this->_resource);
             $this->_lastInsID = mysql_insert_id($this->_resource);
@@ -95,3 +95,5 @@ class DBMysql {
         }
     }
 }
+
+/* vim: set ts=4 sw=4 sts=4 tw=100 noet: */
