@@ -66,6 +66,8 @@ class OO {
             self::$__includePaths[] = self::$__appBasePath;
 			if(is_dir(self::$__appBasePath . '/models'))
 				self::$__includePaths[] = self::$__appBasePath . '/models';
+			if(is_dir(self::$__appBasePath . '/controllers'))
+				self::$__includePaths[] = self::$__appBasePath . '/controllers';
 		}
     }
 
