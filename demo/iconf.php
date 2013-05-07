@@ -20,7 +20,7 @@ return array(
     'apps'  => array(
         'demo' => array(
 			//队列配置,全局唯一KEY
-			'queue_type' => QUEUE_KEY_CNBETA ,  
+			'queue_type' => 'demo_key' ,  
             //数据库配置使用  database节点中的键值
             'database' => array(
                 'type' => 'mysql',  
