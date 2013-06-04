@@ -94,6 +94,26 @@ class DBMysql {
             return mysql_escape_string($str);
         }
     }
+
+    /**
+     * Convert array to where string
+     * @param Array $where
+     * $where = array (
+     *  'tag_id=' => 20,
+     *  '' => 'create_time < 100',
+     * )
+     * @return String 'where tag_id=20 and create_time < 100'
+     */
+    public function getWhereString(Array $where) {
+        if (empty($where))
+            return '';
+        $tmp = array();
+        foreach ($where as $key => $value) {
+            $tmp[] = $this->getSafeString($key) . $this->getSafeString($value);
+        }
+        $result = 'where ' . implode(' and ', $tmp);
+        return $result;
+    }
 }
 
 /* vim: set ts=4 sw=4 sts=4 tw=100 noet: */
